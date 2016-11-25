@@ -1,15 +1,18 @@
 """This module contains several methods, the most important of which
-is set_up_klondike, which will set up a game of Klondike to be played
-via the remaining methods.
+is set_up, which will set up a game of Klondike to be played via the
+remaining methods.
 """
 
 import cards.cards as c
 
-__all__ = ["set_up_klondike", "get_waste", "draw", "move", "show_board"]
+__all__ = ["set_up", "get_waste", "draw", "move", "show_board", "get_result", "VICTORY", "LOSE"]
 
-def set_up_klondike():
-"""This method initializes the board state.
-"""
+VICTORY = "WIN!"
+LOSE = "FAIL!"
+
+def set_up():
+    """This method initializes the board state.
+    """
     global layout, foundations, stock, waste
     layout = [[[], []], [[], []], [[], []], [[], []], [[], []],
                 [[], [] ], [[], []]]
@@ -23,12 +26,18 @@ def set_up_klondike():
     waste = []
 
 def get_layout():
+    """Returns the board layout.
+    """
     return layout
 
 def get_waste():
+    """Returns the contents of the waste pile.
+    """
     return waste
 
 def draw():
+    """Draws from the stock.
+    """
     global stock, waste
     if len(stock) < 1:
         stock = c.Deck(waste)
@@ -45,8 +54,19 @@ def can_move(card, target):
     return card.rank == target.rank - 1
 
 def m(*args):
-"""
-"""
+    """Combines all move functions into a single function.
+Call with no args to move the top card in the waste to the appropriate
+foundation.
+Call with "w" and a number to move the top card of the waste onto a layout
+pile.
+Call with a number and "f" to move the top card of a layout pile to the
+appropriate foundation.
+Call with two numbers to move the top card from the layout pile indicated by
+the first number to the layout pile indicated by the second number.
+Call with three numbers to move the top card from the layout pile indicated by
+the first number and a number of cards beneath it equal to the second number to
+the layout pile indicated by the third number.
+    """
     if len(args) == 0:
         move_waste_to_foundation()
         show_board()
@@ -64,20 +84,24 @@ def m(*args):
         show_board()
         return
     if len(args) == 3:
+        if args[0] == 'f':
+            move_from_foundation(args[1], args[2])
+            show_board()
+            return
         move([args[0], args[1]], args[2])
         show_board()
         return
     show_board()
     return
 
-"""old_location should have at index 0 an int indicating which column of the
-layout the card to move is in and at index 1 an int indicating how far from the
-bottom of the stack of face up cards that card is. location should be an int
-indicating the column to which old_location should be moved.
+def move(old_location, location):
+    """old_location should have at index 0 an int indicating which column of 
+the layout the card to move is in and at index 1 an int indicating how far 
+from the bottom of the stack of face up cards that card is. location should 
+be an int indicating the column to which old_location should be moved.
 Returns False if the indicated card could not be moved to the specified column.
 Otherwise returns True.
-"""
-def move(old_location, location):
+    """
     build = layout[old_location[0]][1]
     for i in range(len(build) - 1, old_location[1], -1):
         if not can_move(build[i], build[i - 1]):
@@ -137,13 +161,29 @@ def move_to_foundation(old_col):
     for f in foundations:
         if not f is 13:
             return True
-    print "You Win!"
     return True
+
+def move_from_foundation(fNum, lNum):
+    if fNum == 0:
+        suit = "Clubs"
+    elif fNum == 1:
+        suit = "Hearts"
+    elif fNum == 2:
+        suit = "Spades"
+    elif fNum == 3:
+        suit = "Diamonds"
+    card = c.PlayingCard(foundations[fNum], suit)
+    if can_move(card, layout[lNum][1][-1]):
+        layout[lNum][1].append(card)
+        foundations[fNum] -= 1
+        return True
+    return False
 
 def move_waste_to_foundation():
     layout.append([[], [waste[-1]]])
-    if move_to_foundation(len(layout) - 1):
+    if move_to_foundation(-1):
         del waste[-1]
+        del layout[-1]
         return True
     del layout[-1]
     return False
@@ -161,11 +201,11 @@ def move_from_waste(col):
     return False
 
 def display_layout():
-    print "Facedown cards:",
-    print repr(len(layout[0][0])).rjust(8), repr(len(layout[1][0])).rjust(8),
-    print repr(len(layout[2][0])).rjust(8), repr(len(layout[3][0])).rjust(8),
-    print repr(len(layout[4][0])).rjust(8), repr(len(layout[5][0])).rjust(8),
-    print repr(len(layout[6][0])).rjust(8)
+    print("Facedown cards:", repr(len(layout[0][0])).rjust(8),
+            repr(len(layout[1][0])).rjust(8), repr(len(layout[2][0])).rjust(8),
+            repr(len(layout[3][0])).rjust(8), repr(len(layout[4][0])).rjust(8),
+            repr(len(layout[5][0])).rjust(8), repr(len(layout[6][0])).rjust(8),
+            "\n", end=" ")
     c1 = len(layout[0][1])
     c2 = len(layout[1][1])
     c3 = len(layout[2][1])
@@ -181,13 +221,12 @@ def display_layout():
         c5 = get_card([4, i])
         c6 = get_card([5, i])
         c7 = get_card([6, i])
-        print "".rjust(15),
-        print repr(c1).rjust(8), repr(c2).rjust(8), repr(c3).rjust(8),
-        print repr(c4).rjust(8), repr(c5).rjust(8), repr(c6).rjust(8),
-        print repr(c7).rjust(8)
+        print("".rjust(15), repr(c1).rjust(8), repr(c2).rjust(8),
+                repr(c3).rjust(8), repr(c4).rjust(8), repr(c5).rjust(8),
+                repr(c6).rjust(8), repr(c7).rjust(8), "\n", end=" ")
 
 def show_board():
-    print "Stock: ", (repr(len(stock)) + " ").rjust(16),
+    print("Stock: ", (repr(len(stock)) + " ").rjust(16), end=" ")
     waste_str = ""
     if len(waste) >= 3:
         waste_str += repr(waste[-3])[-2:] + " "
@@ -195,25 +234,25 @@ def show_board():
         waste_str += repr(waste[-2])[-2:] + " "
     if len(waste) >= 1:
         waste_str += repr(waste[-1])[-2:]
-    print waste_str.rjust(8),
-    print "".rjust(8),
+    print(waste_str.rjust(8), "".rjust(8), end=" ")
     if foundations[0] > 0:
-        print repr(c.PlayingCard(foundations[0], "Clubs")).rjust(8),
+        print(repr(c.PlayingCard(foundations[0], "Clubs")).rjust(8), end=" ")
     else:
-        print "".rjust(8),
+        print("".rjust(8), end=" ")
     if foundations[1] > 0:
-        print repr(c.PlayingCard(foundations[1], "Hearts")).rjust(8),
+        print(repr(c.PlayingCard(foundations[1], "Hearts")).rjust(8), end=" ")
     else:
-        print "".rjust(8),
+        print("".rjust(8), end=" ")
     if foundations[2] > 0:
-        print repr(c.PlayingCard(foundations[2], "Spades")).rjust(8),
+        print(repr(c.PlayingCard(foundations[2], "Spades")).rjust(8), end=" ")
     else:
-        print "".rjust(8),
+        print("".rjust(8), end=" ")
     if foundations[3] > 0:
-        print repr(c.PlayingCard(foundations[3], "Diamonds")).rjust(8),
+        print(repr(c.PlayingCard(foundations[3], "Diamonds")).rjust(8),
+                end=" ")
     else:
-        print "".rjust(8),
-    print
+        print("".rjust(8), end=" ")
+    print()
     display_layout()
 
 def get_card(location):
@@ -222,3 +261,11 @@ def get_card(location):
     if location[1] >= len(layout[location[0]][1]):
         return "";
     return layout[location[0]][1][location[1]]
+
+def get_result():
+    if sum(foundations) == 52:
+        return VICTORY
+    return "INCOMPLETE"
+
+if __name__ == "__main__":
+    set_up()
