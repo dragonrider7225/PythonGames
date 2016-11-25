@@ -95,10 +95,10 @@ the layout pile indicated by the third number.
     return
 
 def move(old_location, location):
-    """old_location should have at index 0 an int indicating which column of 
-the layout the card to move is in and at index 1 an int indicating how far 
-from the bottom of the stack of face up cards that card is. location should 
-be an int indicating the column to which old_location should be moved.
+    """old_location should have at index 0 an int indicating which column of
+the layout the card to move is in and at index 1 an int indicating how many
+face up cards are below that card. location should be an int indicating the
+column to which old_location should be moved.
 Returns False if the indicated card could not be moved to the specified column.
 Otherwise returns True.
     """

@@ -55,10 +55,14 @@ def print_valid_moves(game):
     game.show_board()
     print("Please enter a valid move:")
     if game == klondike:
-        print("s[tock]", "m[ove] w[aste] f[oundation]", "m[ove] w[aste] lN")
-        print("m[ove] lN f[oundation]", "m[ove] lN1 lN2 C", "m[ove] fM lN")
+        print("s[tock]")
+        print("m[ove] w[aste] f[oundation]")
+        print("m[ove] w[aste] lN")
+        print("m[ove] lN f[oundation]")
+        print("m[ove] lN1 lN2 C")
+        print("m[ove] fM lN")
         print("0 <= N* <= 6, 0 <= M <= 3, C is the number of cards", end=" ")
-        print("that are on top of the card to move from one layout", end=" ")
+        print("that are below the card to move from one layout", end=" ")
         print("pile to another.")
 
 if __name__ == "__main__":
