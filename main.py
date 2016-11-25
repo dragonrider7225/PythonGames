@@ -21,6 +21,7 @@ def main():
         if game == klondike:
             if m[0][0] == "s":
                 game.draw()
+                game.show_board()
             elif m[0][0] == "m":
                 if m[1][0] == "w":
                     if m[2][0] == "f":
@@ -38,6 +39,17 @@ def main():
                             game.m(int(m[1][1:]), int(m[2][1:]))
                         else:
                             game.m(int(m[1][1:]), int(m[3]), int(m[2][1:]))
+                    else:
+                        print_valid_moves(game)
+                elif m[1][0] == "f":
+                    if m[2][0] == "l":
+                        game.m("f", int(m[1][1:]), int(m[2][1:]))
+                    else:
+                        print_valid_moves(game)
+                else:
+                    print_valid_moves(game)
+            else:
+                print_valid_moves(game)
 
 def print_valid_moves(game):
     game.show_board()
