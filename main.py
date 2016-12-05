@@ -8,7 +8,8 @@ def main():
         sys.exit(0)
     if opt == 1:
         game = klondike
-    game.set_up()
+        args = []
+    game.set_up(*args)
     game.show_board()
     while True:
         if game.get_result() == game.VICTORY:
