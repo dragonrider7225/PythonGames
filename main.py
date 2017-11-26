@@ -50,6 +50,8 @@ def main():
                         print_valid_moves(game)
                 else:
                     print_valid_moves(game)
+            elif m[0][0] == "q":
+                sys.exit(0)
             else:
                 print_valid_moves(game)
 
@@ -63,6 +65,7 @@ def print_valid_moves(game):
         print("m[ove] lN f[oundation]")
         print("m[ove] lN1 lN2 C")
         print("m[ove] fM lN")
+        print("q[uit]")
         print("0 <= N* <= 6, 0 <= M <= 3, C is the number of cards", end=" ")
         print("that are below the card to move from one layout", end=" ")
         print("pile to another.")
