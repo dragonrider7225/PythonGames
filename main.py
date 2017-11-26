@@ -1,5 +1,6 @@
 #!py -3
 from solitaire import *
+import sys
 
 def main():
     opt = int(input("Which game would you like to play?\n\t0: Quit program\n" +

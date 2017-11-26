@@ -8,7 +8,7 @@ def draw_card_base(surf, rect):
 Draw a blank card in the given Rect and blit it to the given surface.
 
 Written by josmiley and obtained from http://www.pygame.org/project-AAfilledRoundedRect-2349-.html
-Modified by dragonrider7225
+Modified by Kevin Moonen
 """
     radius = 0.15
     rect = pyg.Rect(rect)
